@@ -1,0 +1,62 @@
+
+{% extends "base.html" %}
+
+{% block title %}Edit Profile | MaSound{% endblock %}
+
+{% block content %}
+
+<section class="profile-edit">
+
+    <h1>Edit your profile</h1>
+
+    <p>Customize your MaSound account.</p>
+
+    {% if profile.avatar %}
+        <img
+            src="{{ profile.avatar.url }}"
+            alt="Avatar"
+            class="profile-avatar"
+        >
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Username</label>
+            {{ form.username }}
+            {{ form.username.errors }}
+        </div>
+
+        <div class="form-group">
+            <label>Display name</label>
+            {{ form.display_name }}
+            {{ form.display_name.errors }}
+        </div>
+
+        <div class="form-group">
+            <label>Bio</label>
+            {{ form.bio }}
+            {{ form.bio.errors }}
+        </div>
+
+        <div class="form-group">
+            <label>Profile picture</label>
+            {{ form.avatar }}
+            {{ form.avatar.errors }}
+        </div>
+
+        <button type="submit" class="button">
+            Save changes
+        </button>
+
+        <a href="{% url 'my_profile' %}">
+            Cancel
+        </a>
+
+    </form>
+
+</section>
+
+{% endblock %}

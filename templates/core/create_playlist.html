@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block content %}<section class="form-wrap"><div class="kicker">CURATE YOUR VIBE</div><h1>Create a <em>playlist.</em></h1><form method="post" class="form-card">{% csrf_token %}<label>Playlist name<input name="title" required placeholder="Late night drives..."></label><button class="button">Create playlist →</button></form></section>{% endblock %}

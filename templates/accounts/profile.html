@@ -1,0 +1,58 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ profile_user.username }} | MaSound{% endblock %}
+
+{% block content %}
+
+<section class="user-profile">
+
+    <div class="profile-header">
+
+        {% if profile.avatar %}
+            <img
+                src="{{ profile.avatar.url }}"
+                class="profile-avatar"
+                alt="Profile picture"
+            >
+        {% else %}
+            <div class="profile-avatar-placeholder">
+                {{ profile_user.username|first|upper }}
+            </div>
+        {% endif %}
+
+        <div>
+            <h1>
+                {{ profile.display_name|default:profile_user.username }}
+            </h1>
+
+            <p>@{{ profile_user.username }}</p>
+
+            {% if profile.bio %}
+                <p>{{ profile.bio }}</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+    {% if user == profile_user %}
+        <a href="{% url 'edit_profile' %}" class="button">
+            Edit profile
+        </a>
+    {% endif %}
+
+    <h2>Tracks</h2>
+
+    {% for track in profile_user.tracks.all %}
+        <div class="track-card">
+            <a href="{% url 'track_detail' track.pk %}">
+                {{ track.title }}
+            </a>
+        </div>
+    {% empty %}
+        <p>No tracks uploaded yet.</p>
+    {% endfor %}
+
+</section>
+
+{% endblock %}

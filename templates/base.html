@@ -1,0 +1,249 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>
+        {% block title %}MaSOUND{% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+</head>
+
+<body>
+
+    <!-- TOP NAVIGATION -->
+    <header class="topbar">
+
+        <a class="brand" href="{% url 'home' %}">
+            <span class="brand-mark">▶</span>
+            Ma<span>SOUND</span>
+        </a>
+
+        <!-- SEARCH -->
+        <form
+            class="search"
+            action="{% url 'home' %}"
+        >
+            <input
+                name="q"
+                value="{{ query|default:'' }}"
+                placeholder="Search for artists, tracks, genres..."
+            >
+
+            <button type="submit">⌕</button>
+        </form>
+
+        <!-- NAVIGATION -->
+        <nav>
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+            <a href="{% url 'create_playlist' %}">
+                Playlists
+            </a>
+
+            {% if user.is_authenticated %}
+
+                <a href="{% url 'upload' %}">
+                    Upload
+                </a>
+
+                <!-- USER PROFILE -->
+                <a
+                    href="{% url 'my_profile' %}"
+                    class="user-menu"
+                >
+
+                    {% if current_profile and current_profile.avatar %}
+
+                        <img
+                            src="{{ current_profile.avatar.url }}"
+                            class="nav-avatar"
+                            alt="Avatar"
+                        >
+
+                    {% else %}
+
+                        <span class="nav-avatar-placeholder">
+                            {{ user.username|first|upper }}
+                        </span>
+
+                    {% endif %}
+
+                    <span class="user-info">
+
+                        <strong>
+                            {{ current_profile.display_name|default:user.username }}
+                        </strong>
+
+                        <small>
+                            @{{ user.username }}
+                        </small>
+
+                    </span>
+
+                </a>
+
+                <a href="{% url 'logout' %}">
+                    Sign out
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'login' %}">
+                    Sign in
+                </a>
+
+                <a
+                    class="signup"
+                    href="{% url 'signup' %}"
+                >
+                    Create account
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+    </header>
+
+
+    <!-- NOTIFICATIONS -->
+    {% if messages %}
+
+        <div class="messages">
+
+            {% for message in messages %}
+
+                <p>{{ message }}</p>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <!-- MUSIC PLAYER -->
+    <div class="player" id="player">
+
+        <!-- CURRENT TRACK -->
+        <div class="now-playing">
+
+            <div
+                class="mini-cover"
+                id="miniCover"
+            >
+                ♫
+            </div>
+
+            <div>
+
+                <b id="nowTitle">
+                    Choose a track
+                </b>
+
+                <small id="nowArtist">
+                    MaSOUND
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- PLAYER CONTROLS -->
+        <div class="player-center">
+
+            <div class="controls">
+
+                <button id="prev">
+                    |◀
+                </button>
+
+                <button
+                    class="play"
+                    id="playPause"
+                >
+                    ▶
+                </button>
+
+                <button id="next">
+                    ▶|
+                </button>
+
+            </div>
+
+
+            <!-- TIMELINE -->
+            <div class="timeline">
+
+                <span id="currentTime">
+                    0:00
+                </span>
+
+                <input
+                    id="seek"
+                    type="range"
+                    min="0"
+                    max="100"
+                    value="0"
+                >
+
+                <span id="duration">
+                    0:00
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- VOLUME -->
+        <div class="volume">
+
+            🔊
+
+            <input
+                id="volume"
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.8"
+            >
+
+        </div>
+
+
+        <!-- AUDIO -->
+        <audio id="audio"></audio>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="{% static 'js/player.js' %}"></script>
+
+</body>
+</html>

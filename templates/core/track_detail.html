@@ -1,0 +1,169 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ track.title }} | YOUR SOUND
+{% endblock %}
+
+{% block content %}
+
+<section class="detail">
+
+    <!-- Track cover -->
+    <div
+        class="detail-cover"
+        {% if track.cover %}
+            style="background-image: url('{{ track.cover.url }}')"
+        {% endif %}
+    >
+        {% if not track.cover %}
+            ♫
+        {% endif %}
+    </div>
+
+    <!-- Track information -->
+    <div class="detail-info">
+
+        <div class="kicker">
+            TRACK / {{ track.genre|default:'INDEPENDENT' }}
+        </div>
+
+        <h1>{{ track.title }}</h1>
+
+        <p class="artist">
+            by {{ track.artist.username }}
+        </p>
+
+        <!-- Play button -->
+        <button
+            class="button"
+            data-audio="{{ track.audio.url }}"
+            data-title="{{ track.title|escapejs }}"
+            data-artist="{{ track.artist.username|escapejs }}"
+            data-cover="{% if track.cover %}{{ track.cover.url }}{% endif %}"
+        >
+            ▶ Play track
+        </button>
+
+        <!-- Like button -->
+        <form
+            method="post"
+            action="{% url 'toggle_like' track.pk %}"
+            class="inline"
+        >
+            {% csrf_token %}
+
+            <button type="submit" class="like-button">
+                ♥ {{ track.likes_count }}
+
+                {% if liked %}
+                    Liked
+                {% else %}
+                    Like
+                {% endif %}
+            </button>
+        </form>
+
+        <!-- Edit and Delete buttons -->
+        {% if user.is_authenticated and user == track.artist %}
+
+            <div class="track-actions">
+
+                <a
+                    href="{% url 'edit_track' track.pk %}"
+                    class="button"
+                >
+                    ✏ Edit track
+                </a>
+
+                <a
+                    href="{% url 'delete_track' track.pk %}"
+                    class="button delete-button"
+                >
+                    🗑 Delete track
+                </a>
+
+            </div>
+
+        {% endif %}
+
+        <!-- Description -->
+        {% if track.description %}
+            <div class="track-description">
+                <p>{{ track.description|linebreaksbr }}</p>
+            </div>
+        {% endif %}
+
+        <p class="muted">
+            Uploaded {{ track.created_at|date:'M d, Y' }}
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- Comments section -->
+<section class="section comments">
+
+    <h2>Comments</h2>
+
+    {% if user.is_authenticated %}
+
+        <form method="post" class="comment-form">
+
+            {% csrf_token %}
+
+            <textarea
+                name="body"
+                required
+                maxlength="600"
+                placeholder="Leave a comment..."
+            ></textarea>
+
+            <button type="submit" class="button">
+                Post comment
+            </button>
+
+        </form>
+
+    {% else %}
+
+        <p>
+            <a href="{% url 'login' %}">Sign in</a>
+            to leave a comment.
+        </p>
+
+    {% endif %}
+
+
+    <!-- Existing comments -->
+    <div class="comments-list">
+
+        {% for comment in track.comments.all %}
+
+            <div class="comment">
+
+                <b>{{ comment.user.username }}</b>
+
+                <small>
+                    {{ comment.created_at|date:'M d, Y H:i' }}
+                </small>
+
+                <p>{{ comment.body }}</p>
+
+            </div>
+
+        {% empty %}
+
+            <p class="muted">
+                No comments yet. Start the conversation.
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endblock %}

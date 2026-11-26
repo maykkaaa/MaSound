@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="form-wrap">
+
+    <h1>Delete track</h1>
+
+    <p>
+        Are you sure you want to delete
+        <strong>{{ track.title }}</strong>?
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <button class="button" type="submit">
+            Yes, delete track
+        </button>
+
+        <a href="{% url 'track_detail' track.pk %}">
+            Cancel
+        </a>
+    </form>
+
+</section>
+
+{% endblock %}

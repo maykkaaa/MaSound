@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block content %}<section class="form-wrap"><div class="kicker">JOIN THE COMMUNITY</div><h1>Create your <em>account.</em></h1><form method="post" class="form-card">{% csrf_token %}{{ form.as_p }}<button class="button">Create account →</button></form></section>{% endblock %}
